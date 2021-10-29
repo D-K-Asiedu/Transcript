@@ -5,7 +5,8 @@ import TranscriptInfo from './TranscriptInfo';
 import { Link } from 'react-router-dom';
 
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../AuthContext';
 
 const { Content, Sider } = Layout;
 
@@ -14,9 +15,11 @@ const Dashboard = () => {
     }
 
     const [details, setDetails] = useState()
+    const {token} = useContext(AuthContext)
 
     useEffect(()=>{
-        axios.get("http://localhost:3001/transcripts")
+        console.log(token)
+        axios.post("http://127.0.0.1:5000/transcripts", {"token": token})
         .then(res => {
             console.log(res.data)
             setDetails(res.data)

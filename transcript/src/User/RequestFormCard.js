@@ -1,6 +1,8 @@
 import { Form, Input, InputNumber, Card, Button, Layout, message } from 'antd';
 import axios from 'axios';
+import { useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { AuthContext } from '../AuthContext';
 
 const { Content } = Layout;
 
@@ -33,6 +35,7 @@ const RequestFormCard = () => {
 
     const [form] = Form.useForm();
     const history = useHistory()
+    const {token} = useContext(AuthContext)
 
     const handleSubmit = () => {
         form.submit()
@@ -40,8 +43,14 @@ const RequestFormCard = () => {
 
     const handleFinish = () => {
         console.log("finished")
-        const data = form.getFieldValue()
-        axios.post("http://localhost:3001/request-transcript", data)
+        const _data = form.getFieldValue()
+
+        const data = {
+            "token": token,
+            ..._data
+        }
+
+        axios.post("http://127.0.0.1:5000/request-transcript", data)
         .then(res => {
             console.log(res.status)
             history.push('/dashboard')

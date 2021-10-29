@@ -5,6 +5,8 @@ import number from '../assets/number.png'
 import axios from 'axios'
 
 import UsePost from '../CustomHooks/usePost';
+import { useContext } from 'react';
+import { AuthContext } from '../AuthContext';
 
 const { Content } = Layout;
 
@@ -58,6 +60,7 @@ const EnterContactCard = () => {
 
     const [form] = Form.useForm()
     const history = useHistory()
+    const {login ,setLogin, token,setToken} = useContext(AuthContext)
 
     const handleClick = () =>{
         form.submit()
@@ -67,10 +70,18 @@ const EnterContactCard = () => {
     const handleFinish = ()=> {
         const contact = form.getFieldValue()
         console.log(contact)
-        axios.post("http://localhost:3001/", contact)
+        axios.post("http://127.0.0.1:5000/", contact)
         .then(res => {
-                console.log(res.data)
-                history.push('/otp')
+                if (res.data.login == true){
+                    setLogin(true)
+                    setToken(res.data.token)
+                    console.log(res.data)
+                    history.push('/dashboard')
+                }else{
+                    console.log(res.data)
+                    history.push('/otp/'+contact.contact)
+        
+                }
         })
 
         .catch (err => {

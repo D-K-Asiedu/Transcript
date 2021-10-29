@@ -6,6 +6,7 @@ import { useContext } from 'react';
 
 import axios from 'axios';
 import { AuthContext } from '../AuthContext';
+import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 
 const { Content } = Layout;
 
@@ -59,7 +60,8 @@ const EnterCodeCard = () => {
 
     const [form] = Form.useForm()
     const history = useHistory()
-    const {login, setLogin} = useContext(AuthContext)
+    const {setLogin, setToken, token } = useContext(AuthContext)
+    const {contact} = useParams()
 
     const handleClick = () =>{
         form.submit()
@@ -68,14 +70,19 @@ const EnterCodeCard = () => {
 
     const handleFinish = ()=> {
         const otp = form.getFieldValue()
-        console.log(otp)
-        axios.post("http://localhost:3001/otp", otp)
+
+        const data = {
+            "contact": contact,
+            "otp": otp.otp
+        }
+        axios.post("http://127.0.0.1:5000/otp", data)
         .then(res => {
+            console.log(res.data)
             if (res.data.otp == true){
                 setLogin(true)
-                console.log(login)
+                setToken(res.data.token)
+                console.log(token)
                 history.push('/request-transcript')
-                setLogin(true)
                 message.success("authentication successful")
             }else{
                 message.error("incorrect otp")
@@ -96,7 +103,7 @@ const EnterCodeCard = () => {
                         <div style={styles.cardContent}>
                             <img src={authentication} alt="" style={styles.image}/>
                             <h3 style={styles.title}>Enter verification code</h3>
-                            <p style={styles.paragraph}>OTP has been sent to contact <b>0557270470</b></p>
+                            <p style={styles.paragraph}>OTP has been sent to contact <b>{contact}</b></p>
                             <Form name="basic" autoComplete="off" layout={"vertical"} form={form} onFinish={handleFinish} onFinishFailed={handleFailed}>
                                 <Form.Item name="otp" rules={[{required: true,message: 'Please input your contact!',},]}>
                                     <Input type="number" placeholder="Enter Mobile Number" size="medium" style={styles.input}/>

@@ -27,9 +27,11 @@ const { Header } = Layout;
 
 function App() {
   const [login, setLogin] = useState(false)
+  const [token, setToken] = useState(null)
+  const url = ''
 
   return (
-    <AuthContext.Provider value={{login, setLogin}}>
+    <AuthContext.Provider value={{login, setLogin, token, setToken}}>
     <Router>
         <div className="App">
           <Layout>
@@ -40,7 +42,7 @@ function App() {
               <Route exact path="/">
                 <EnterContactCard />
               </Route>
-              <Route exact path="/otp">
+              <Route exact path="/otp/:contact">
                 <EnterCodeCard />
               </Route>
 

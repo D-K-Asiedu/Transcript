@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Form, Input, InputNumber, Modal, Button, message } from 'antd';
 import axios from 'axios';
 
 import { useHistory } from 'react-router-dom';
+import { AuthContext } from '../../../AuthContext';
 
 
 const useResetFormOnCloseModal = ({ form, visible }) => {
@@ -22,6 +23,7 @@ const useResetFormOnCloseModal = ({ form, visible }) => {
 const RequestForm = ({ visible, onCancel, setVisible }) => {
     const [form] = Form.useForm();
     const history = useHistory();
+    const {token} = useContext(AuthContext)
 
     useResetFormOnCloseModal({
         form,
@@ -31,12 +33,17 @@ const RequestForm = ({ visible, onCancel, setVisible }) => {
     const onOk = () => {
         form.submit();
         console.log(form.getFieldValue);
-        const data = form.getFieldValue()
-        axios.post("http://localhost:3001/request-transcript", data)
+        const _data = form.getFieldValue()
+
+        const data = {
+            "token": token,
+            ..._data
+        }
+
+        axios.post("http://127.0.0.1:5000/request-transcript", data)
         .then(res => {
             console.log(res.status)
             setVisible(false)
-            history.push('/')
 
         })
         .catch(err => {
@@ -71,7 +78,7 @@ const RequestForm = ({ visible, onCancel, setVisible }) => {
                     <Form.Item label="Address" name="address" rules={[{ required: true, message: 'Please input your last address!', },]}>
                         <Input type="text" placeholder="Last Name" size="medium" />
                     </Form.Item>
-                    <Form.Item name="Number of Copies" label="Number of Copies" >
+                    <Form.Item name="copies" label="Number of Copies" >
                         <InputNumber />
                     </Form.Item>
                 </Form>

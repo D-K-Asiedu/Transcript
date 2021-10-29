@@ -35,10 +35,10 @@ const TranscriptInfo = ({ details }) => {
         {details.map((detail) => (
             <Card title={<CardTitle />} bordered={false} style={styles}>
             <Descriptions column={1} >
-                <Descriptions.Item label={<b>First Name</b>}>{detail.firstName}</Descriptions.Item>
-                <Descriptions.Item label={<b>Middle Name</b>}>{detail.middleName}</Descriptions.Item>
-                <Descriptions.Item label={<b>Last Name</b>}>{detail.lastName}</Descriptions.Item>
-                <Descriptions.Item label={<b>Index Number</b>}>{detail.indexNumber}</Descriptions.Item>
+                <Descriptions.Item label={<b>First Name</b>}>{detail.first_name}</Descriptions.Item>
+                <Descriptions.Item label={<b>Middle Name</b>}>{detail.middle_name}</Descriptions.Item>
+                <Descriptions.Item label={<b>Last Name</b>}>{detail.last_name}</Descriptions.Item>
+                <Descriptions.Item label={<b>Index Number</b>}>{detail.index_number}</Descriptions.Item>
                 <Descriptions.Item label={<b>Telephone</b>}>0557270470</Descriptions.Item>
                 <Descriptions.Item label={<b>Address</b>}>
                     {detail.address}
