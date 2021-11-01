@@ -1,8 +1,12 @@
-import { Card,Form, Input, Button, Checkbox } from 'antd';
+import { Card,Form, Input, Button, Checkbox, message } from 'antd';
 import { Layout } from 'antd'
 import { MailOutlined } from '@ant-design/icons';
 import password from '../assets/password_icon.png'
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import axios from 'axios';
+import { useContext } from 'react';
+import { AuthContext } from '../AuthContext';
+
 
 const { Content } = Layout;
 
@@ -39,9 +43,21 @@ const AdminLogin = () => {
         }
 
     }
+    const {setAdminLogin, setAdmin} = useContext(AuthContext)
+    const history = useHistory()
 
     const onFinish = (values) => {
-        console.log('Success:', values);
+        axios.post("http://127.0.0.1:5000/admin/login", values)
+        .then(res => {
+            if (res.data.login == true){
+                setAdminLogin(true)
+                setAdmin(res.data.admin)
+                history.push("/admin/dashboard/"+res.data.type)
+            }
+        })
+        .catch(err => {
+            message.error(err.message)
+        })
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -54,7 +70,7 @@ const AdminLogin = () => {
                     <div style={styles.cardContent}>
                         <h2 style={styles.title}>Welcome Back</h2>
                         <p style={styles.paragraph}>Enter your cridentials to login</p>
-                        <Form name="basic" initialValues={{remember: true,}} onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete="off" layout={"vertical"}>
+                        <Form name="basic" initialValues={{remember: true,}} onFinish={onFinish} onFinishFailed={onFinishFailed} layout={"vertical"}>
                             <Form.Item name="email" rules={[{required: true,message: 'Please input your username!',},]}>
                                 <Input placeholder="Enter your email" prefix={<MailOutlined />}/>
                             </Form.Item>

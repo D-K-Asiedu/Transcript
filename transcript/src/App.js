@@ -28,10 +28,12 @@ const { Header } = Layout;
 function App() {
   const [login, setLogin] = useState(false)
   const [token, setToken] = useState(null)
+  const [admin, setAdmin] = useState(null)
+  const [adminLogin, setAdminLogin] = useState(false)
   const url = ''
 
   return (
-    <AuthContext.Provider value={{login, setLogin, token, setToken}}>
+    <AuthContext.Provider value={{login, setLogin, token, setToken, admin, setAdmin, adminLogin, setAdminLogin}}>
     <Router>
         <div className="App">
           <Layout>
@@ -53,7 +55,7 @@ function App() {
               <Route exact path="/admin">
                 <AdminLogin />
               </Route>
-              <Route exact path="/confirm-password">
+              <Route exact path="/set-password/:id">
                 <AdminConfirmPassword />
               </Route>
               <Route exact path="/admin/register">

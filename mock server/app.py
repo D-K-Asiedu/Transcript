@@ -1,5 +1,5 @@
 from enum import unique
-from flask import Flask, request,jsonify
+from flask import Flask, json, request,jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
 from random import randint
@@ -36,6 +36,7 @@ class Admin(db.Model):
     middle_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(80), nullable=False, unique=True)
+    type = db.Column(db.String(20), nullable=False)
     password = db.Column(db.String(80))
 
 
@@ -114,6 +115,55 @@ def transcript():
         transcripts.append(transcript_)
 
     return jsonify(transcripts)
+
+@app.route("/admin/register", methods=["POST"])
+def register():
+    data = request.json
+
+    admin = Admin(
+        first_name=data["first-name"],
+        middle_name=data["middle-name"],
+        last_name=data["last-name"],
+        email = data["email"],
+        type = data["type"]
+    )
+
+    db.session.add(admin)
+    db.session.commit()
+
+    admin = Admin.query.filter_by(email=data["email"]).first()
+    return jsonify({"id":  admin.id})
+
+@app.route("/admin/set-password", methods=["POST"])
+def set_password():
+    data = request.json
+
+    admin = Admin.query.get(data["id"])
+    admin.password = data["password"]
+    db.session.commit()
+
+    return jsonify({"msg":"registration complete"})
+
+@app.route("/admin/login", methods=["POST"])
+def login():
+    data = request.json
+
+    admin = Admin.query.filter_by(email=data["email"]).first()
+
+    if admin:
+        if data["password"] == admin.password:
+            return jsonify({
+                "admin": admin.id,
+                "login": True,
+                "type": admin.type
+                })
+
+        else:
+            return jsonify({"msg": "incorrect password"})
+
+    else:
+        return jsonify({"msg": "account does not exist"})
+
 
 
 

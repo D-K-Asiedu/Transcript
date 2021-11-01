@@ -1,8 +1,10 @@
-import { Card,Form, Input, Button, Checkbox } from 'antd';
+import { Card,Form, Input, Button, Checkbox, message } from 'antd';
 import { Layout } from 'antd'
 import { MailOutlined } from '@ant-design/icons';
 import password from '../assets/password_icon.png'
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import axios from 'axios';
+import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 
 const { Content } = Layout;
 
@@ -42,8 +44,18 @@ const AdminConfirmPassword = () => {
 
     }
 
+    const history = useHistory()
+    const {id} = useParams()
+
+
     const onFinish = (values) => {
-        console.log('Success:', values);
+        axios.post("http://127.0.0.1:5000/admin/set-password", {"id": id,...values})
+        .then(res => {
+            history.push("/admin")
+        })
+        .catch(err => {
+            message.error(err.message)
+        })
     };
 
     const onFinishFailed = (errorInfo) => {
