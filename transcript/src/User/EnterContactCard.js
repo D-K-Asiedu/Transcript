@@ -60,7 +60,7 @@ const EnterContactCard = () => {
 
     const [form] = Form.useForm()
     const history = useHistory()
-    const {login ,setLogin, token,setToken} = useContext(AuthContext)
+    const {url ,setLogin,setToken} = useContext(AuthContext)
 
     const handleClick = () =>{
         form.submit()
@@ -70,7 +70,7 @@ const EnterContactCard = () => {
     const handleFinish = ()=> {
         const contact = form.getFieldValue()
         console.log(contact)
-        axios.post("http://127.0.0.1:5000/", contact)
+        axios.post(url+"/", contact)
         .then(res => {
                 if (res.data.login == true){
                     setLogin(true)

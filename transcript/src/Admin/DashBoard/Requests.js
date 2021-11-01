@@ -1,4 +1,7 @@
-import { Table, Select, Space } from 'antd';
+import { Table, Select, Space, message } from 'antd';
+import { useContext, useEffect, useState } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../../AuthContext';
 
 const Requests = (props) => {
     const columns = [
@@ -27,11 +30,11 @@ const Requests = (props) => {
           title: 'Status',
           key: 'status',
           dataIndex: 'status',
-          render: tags => (
+          render: (text, record) => (
             <>
-            <Select defaultValue={"pending"}>
+            <Select defaultValue={record.status} onSelect={(value)=>handleSelect(record.name, record.key, value)}>
                 <Select.Option value="pending">Pending</Select.Option>
-                <Select.Option value="processing">Processing</Select.Option>
+                <Select.Option value="processing" disabled={false}>Processing</Select.Option>
                 <Select.Option value="printed">Printed</Select.Option>
                 <Select.Option value="shipped">Shipped</Select.Option>
             </Select>
@@ -40,6 +43,8 @@ const Requests = (props) => {
         },
         
       ];
+
+      
 
       const FinanceColumn = [
         {
@@ -64,44 +69,42 @@ const Requests = (props) => {
             key: 'copies',
           },
       ]
+
+      const {url} = useContext(AuthContext)
+
+      const handleSelect = (name, key, value)=>{
+        axios.post(url+"/admin/set-status", {"id": key, "status": value})
+        .then(res => {
+          message.success("status set successfully")
+        })
+        .catch(err => {
+          message.error(err.message)
+        })
+      }
+
+      const [results, setResults] = useState()
+       let data = []
+
+      useEffect(
+        ()=> {
+          axios.get("http://127.0.0.1:5000/admin/transcripts")
+          .then(res => {
+            setResults(res.data)
+            console.log(results)
+          })
+          .catch(err => {
+            message.error(err.message)
+          })
+        },[])
       
-      const data = [
-        {
-          key: '1',
-          name: 'John Brown',
-          indexNumber: 3580918,
-          contact: '0557270470',
-          copies: 1
-        },
-        {
-          key: '2',
-          name: 'John Brown',
-          indexNumber: 3580918,
-          contact: '0557270470',
-          copies: 5
-        },
-        {
-          key: '3',
-          name: 'John Brown',
-          indexNumber: 3580918,
-          contact: '0557270470',
-          copies: 4
-        },
-        {
-          key: '4',
-          name: 'John Brown',
-          indexNumber: 3580918,
-          contact: '0557270470',
-          copies: 2
-        },
-        
-      ];
+      
+     
 
       if(props.type === "finance"){
-          return (<Table columns={FinanceColumn} dataSource={data} />)
+          return (<Table columns={FinanceColumn} dataSource={results} />)
       }else{
         return ( 
-            <Table columns={columns} dataSource={data} />
+            <Table columns={columns} dataSource={results} />
          );
       }
     

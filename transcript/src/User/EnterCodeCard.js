@@ -60,7 +60,7 @@ const EnterCodeCard = () => {
 
     const [form] = Form.useForm()
     const history = useHistory()
-    const {setLogin, setToken, token } = useContext(AuthContext)
+    const {setLogin, setToken, url } = useContext(AuthContext)
     const {contact} = useParams()
 
     const handleClick = () =>{
@@ -75,13 +75,12 @@ const EnterCodeCard = () => {
             "contact": contact,
             "otp": otp.otp
         }
-        axios.post("http://127.0.0.1:5000/otp", data)
+        axios.post(url+"/otp", data)
         .then(res => {
             console.log(res.data)
             if (res.data.otp == true){
                 setLogin(true)
                 setToken(res.data.token)
-                console.log(token)
                 history.push('/request-transcript')
                 message.success("authentication successful")
             }else{

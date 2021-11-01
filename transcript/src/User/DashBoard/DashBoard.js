@@ -15,11 +15,11 @@ const Dashboard = () => {
     }
 
     const [details, setDetails] = useState()
-    const {token} = useContext(AuthContext)
+    const {url, token} = useContext(AuthContext)
 
     useEffect(()=>{
         console.log(token)
-        axios.post("http://127.0.0.1:5000/transcripts", {"token": token})
+        axios.post(url+"/transcripts", {"token": token})
         .then(res => {
             console.log(res.data)
             setDetails(res.data)

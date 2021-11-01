@@ -11,6 +11,7 @@ import AdminDashboard from './Admin/DashBoard/AdminDashboard';
 
 import PrivateRoute from './routes/PrivateRoute';
 import PublicRoute from './routes/PublicRoute';
+import AdminPrivateRoute from './routes/AdminPrivateRoutes';
 
 import { AuthContext } from './AuthContext';
 import { useState } from 'react';
@@ -30,10 +31,10 @@ function App() {
   const [token, setToken] = useState(null)
   const [admin, setAdmin] = useState(null)
   const [adminLogin, setAdminLogin] = useState(false)
-  const url = ''
+  const url = 'http://127.0.0.1:5000'
 
   return (
-    <AuthContext.Provider value={{login, setLogin, token, setToken, admin, setAdmin, adminLogin, setAdminLogin}}>
+    <AuthContext.Provider value={{url,login, setLogin, token, setToken, admin, setAdmin, adminLogin, setAdminLogin}}>
     <Router>
         <div className="App">
           <Layout>
@@ -61,9 +62,8 @@ function App() {
               <Route exact path="/admin/register">
                 <AdminRegister />
               </Route>
-              <Route exact path="/admin/dashboard/:type">
-                <AdminDashboard />
-              </Route>
+
+              <AdminPrivateRoute path='/admin/dashboard/:type' exact component={() => (<AdminDashboard />)} />
 
 
             </Switch>

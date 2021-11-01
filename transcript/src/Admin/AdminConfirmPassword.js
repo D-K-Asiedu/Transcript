@@ -5,6 +5,8 @@ import password from '../assets/password_icon.png'
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
+import { useCallback, useContext } from 'react';
+import { AuthContext } from '../AuthContext';
 
 const { Content } = Layout;
 
@@ -46,10 +48,11 @@ const AdminConfirmPassword = () => {
 
     const history = useHistory()
     const {id} = useParams()
+    const {url} = useContext(AuthContext)
 
 
     const onFinish = (values) => {
-        axios.post("http://127.0.0.1:5000/admin/set-password", {"id": id,...values})
+        axios.post(url+"/admin/set-password", {"id": id,...values})
         .then(res => {
             history.push("/admin")
         })

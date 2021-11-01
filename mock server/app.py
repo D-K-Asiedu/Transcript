@@ -110,7 +110,8 @@ def transcript():
             "middle_name": transcript.middle_name,
             "last_name": transcript.last_name,
             "index_number": transcript.index_number,
-            "copies": transcript.copies
+            "copies": transcript.copies,
+            "status": transcript.status
         }
         transcripts.append(transcript_)
 
@@ -120,19 +121,25 @@ def transcript():
 def register():
     data = request.json
 
-    admin = Admin(
-        first_name=data["first-name"],
-        middle_name=data["middle-name"],
-        last_name=data["last-name"],
-        email = data["email"],
-        type = data["type"]
-    )
-
-    db.session.add(admin)
-    db.session.commit()
-
     admin = Admin.query.filter_by(email=data["email"]).first()
-    return jsonify({"id":  admin.id})
+
+    if admin:
+        return jsonify({"msg": "email exists"})
+
+    else:
+        admin = Admin(
+            first_name=data["first-name"],
+            middle_name=data["middle-name"],
+            last_name=data["last-name"],
+            email = data["email"],
+            type = data["type"]
+        )
+
+        db.session.add(admin)
+        db.session.commit()
+
+        admin = Admin.query.filter_by(email=data["email"]).first()
+        return jsonify({"id":  admin.id, "register": True})
 
 @app.route("/admin/set-password", methods=["POST"])
 def set_password():
@@ -163,6 +170,34 @@ def login():
 
     else:
         return jsonify({"msg": "account does not exist"})
+
+@app.route("/admin/transcripts",)
+def admin_transcripts():
+    data = Transcript.query.all()
+
+    transcripts = []
+    for transcript in data:
+        transcript_ = {
+            "key": transcript.id,
+            "name": f"{transcript.first_name} {transcript.middle_name} {transcript.last_name}",
+            "indexNumber": transcript.index_number,
+            "copies": transcript.copies,
+            "status": transcript.status,
+
+        }
+        transcripts.append(transcript_)
+
+    return jsonify(transcripts)
+
+@app.route("/admin/set-status", methods=["POST"])
+def set_status():
+    data = request.json
+
+    transcript = Transcript.query.get(data["id"])
+    transcript.status = data["status"]
+    db.session.commit()
+
+    return jsonify({"msg":"Success"})
 
 
 

@@ -23,7 +23,7 @@ const useResetFormOnCloseModal = ({ form, visible }) => {
 const RequestForm = ({ visible, onCancel, setVisible }) => {
     const [form] = Form.useForm();
     const history = useHistory();
-    const {token} = useContext(AuthContext)
+    const {url, token} = useContext(AuthContext)
 
     useResetFormOnCloseModal({
         form,
@@ -40,7 +40,7 @@ const RequestForm = ({ visible, onCancel, setVisible }) => {
             ..._data
         }
 
-        axios.post("http://127.0.0.1:5000/request-transcript", data)
+        axios.post(url+"request-transcript", data)
         .then(res => {
             console.log(res.status)
             setVisible(false)

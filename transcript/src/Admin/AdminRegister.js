@@ -34,12 +34,18 @@ const AdminRegister = () => {
     }
 
     const history = useHistory()
+    const {url} = useContext(AuthContext)
 
     const handleFinish = (values)=> {
-        axios.post("http://127.0.0.1:5000/admin/register", values)
+        axios.post(url+"/admin/register", values)
         .then(res => {
-            history.push("/set-password/"+ res.data.id)
-            console.log(res.data)
+            if (res.data.register == true){
+                history.push("/set-password/"+ res.data.id)
+                console.log(res.data)
+            }else{
+                message.error(res.data.msg)
+            }
+            
         })
         .catch(err => {
             message.error(err.message)

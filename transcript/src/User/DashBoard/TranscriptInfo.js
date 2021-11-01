@@ -4,7 +4,7 @@ import {
 
   } from '@ant-design/icons';
 
-const CardTitle = () => {
+const CardTitle = ({ status }) => {
     const styles = {
         display: "flex",
         justifyContent: "space-between"
@@ -15,7 +15,7 @@ const CardTitle = () => {
                 Transcript detail
             </div>
             <div className="status">
-                Status: <Tag icon={<SyncOutlined spin />} color="processing">processing</Tag>
+                Status: <Tag icon={<SyncOutlined spin />} color="processing">{status}</Tag>
             </div>
         </div>
      );
@@ -33,7 +33,7 @@ const TranscriptInfo = ({ details }) => {
     return (
         <>
         {details.map((detail) => (
-            <Card title={<CardTitle />} bordered={false} style={styles}>
+            <Card title={<CardTitle  status={detail.status}/>} bordered={false} style={styles}>
             <Descriptions column={1} >
                 <Descriptions.Item label={<b>First Name</b>}>{detail.first_name}</Descriptions.Item>
                 <Descriptions.Item label={<b>Middle Name</b>}>{detail.middle_name}</Descriptions.Item>
