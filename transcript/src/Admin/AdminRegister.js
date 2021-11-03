@@ -64,7 +64,7 @@ const AdminRegister = () => {
                             <Form.Item label="First Name" name="first-name" rules={[{ required: true, message: 'Please input your first name!', },]}>
                                 <Input type="text" placeholder="First Name" size="medium" />
                             </Form.Item>
-                            <Form.Item label="Middle Name" name="middle-name" rules={[{ required: true, message: 'Please input your middle name!', },]}>
+                            <Form.Item label="Middle Name" name="middle-name" >
                                 <Input type="text" placeholder="Middle Name" size="medium" />
                             </Form.Item>
                             <Form.Item label="last Name" name="last-name" rules={[{ required: true, message: 'Please input your last name!', },]}>

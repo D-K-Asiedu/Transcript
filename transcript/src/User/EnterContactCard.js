@@ -4,7 +4,7 @@ import { Link, useHistory } from 'react-router-dom';
 import number from '../assets/number.png'
 import axios from 'axios'
 
-import UsePost from '../CustomHooks/usePost';
+import PostData from '../CustomHooks/PostData';
 import { useContext } from 'react';
 import { AuthContext } from '../AuthContext';
 
@@ -87,6 +87,7 @@ const EnterContactCard = () => {
         .catch (err => {
             message.error(err.message)
         })
+        
 
     }
 

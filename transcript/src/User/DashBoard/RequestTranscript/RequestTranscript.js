@@ -3,7 +3,7 @@ import { Button, Empty } from 'antd';
 import RequestForm from './RequestForm'
 
 
-const RequestTranscript = () => {
+const RequestTranscript = ({ setDetails }) => {
   const [visible, setVisible] = useState(false);
 
   const showModal = () => {
@@ -25,7 +25,7 @@ const RequestTranscript = () => {
   return (
     <>
       <Button type="primary" onClick={showModal} style={styles.button}>Request Transcript</Button>
-      <RequestForm visible={visible} setVisible={setVisible} onCancel={hideUserModal} />
+      <RequestForm visible={visible} setVisible={setVisible} onCancel={hideUserModal} setDetails={setDetails}/>
     </>
   );
 };

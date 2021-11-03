@@ -20,7 +20,7 @@ const useResetFormOnCloseModal = ({ form, visible }) => {
 }
 
 
-const RequestForm = ({ visible, onCancel, setVisible }) => {
+const RequestForm = ({ visible, onCancel, setVisible, setDetails }) => {
     const [form] = Form.useForm();
     const history = useHistory();
     const {url, token} = useContext(AuthContext)
@@ -40,7 +40,7 @@ const RequestForm = ({ visible, onCancel, setVisible }) => {
             ..._data
         }
 
-        axios.post(url+"request-transcript", data)
+        axios.post(url+"/request-transcript", data)
         .then(res => {
             console.log(res.status)
             setVisible(false)
@@ -49,6 +49,19 @@ const RequestForm = ({ visible, onCancel, setVisible }) => {
         .catch(err => {
             message.error(err.message)
         })
+
+        setTimeout(()=> {
+            axios.post(url+"/transcripts", {"token": token})
+        .then(res => {
+            console.log(res.data)
+            setDetails(res.data)
+            
+        })
+        .catch(err => {
+            message.error(err.message)
+        })
+        }, 3000)
+        
     };
 
     return (
@@ -69,7 +82,7 @@ const RequestForm = ({ visible, onCancel, setVisible }) => {
                     <Form.Item label="First Name" name="first-name" rules={[{ required: true, message: 'Please input your first name!', },]}>
                         <Input type="text" placeholder="First Name" size="medium" />
                     </Form.Item>
-                    <Form.Item label="Middle Name" name="middle-name" rules={[{ required: true, message: 'Please input your middle name!', },]}>
+                    <Form.Item label="Middle Name" name="middle-name">
                         <Input type="text" placeholder="Middle Name" size="medium" />
                     </Form.Item>
                     <Form.Item label="last Name" name="last-name" rules={[{ required: true, message: 'Please input your last name!', },]}>

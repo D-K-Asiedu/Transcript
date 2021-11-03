@@ -62,7 +62,7 @@ const Dashboard = () => {
                 </Sider>
                 <Content>
                     <div className="site-layout-background" style={{ padding: 30, marginTop: "50px",minHeight: "100vh", background: "rgba(245, 245, 245, 1)" }}> 
-                        <RequestTranscript />
+                        <RequestTranscript setDetails={setDetails}/>
                         {details && <TranscriptInfo details={details}/>}
                     </div>
                 </Content>

@@ -22,7 +22,7 @@ class User(db.Model):
 class Transcript(db.Model):
     id  = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(80), nullable=False)
-    middle_name = db.Column(db.String(80), nullable=False)
+    middle_name = db.Column(db.String(80))
     last_name = db.Column(db.String(80), nullable=False)
     index_number = db.Column(db.Integer, nullable=False)
     address = db.Column(db.String(80), nullable=False)
@@ -33,7 +33,7 @@ class Transcript(db.Model):
 class Admin(db.Model):
     id  = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(80), nullable=False)
-    middle_name = db.Column(db.String(80), nullable=False)
+    middle_name = db.Column(db.String(80))
     last_name = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(80), nullable=False, unique=True)
     type = db.Column(db.String(20), nullable=False)
@@ -111,6 +111,7 @@ def transcript():
             "last_name": transcript.last_name,
             "index_number": transcript.index_number,
             "copies": transcript.copies,
+            "address": transcript.address,
             "status": transcript.status
         }
         transcripts.append(transcript_)
@@ -127,13 +128,22 @@ def register():
         return jsonify({"msg": "email exists"})
 
     else:
-        admin = Admin(
-            first_name=data["first-name"],
-            middle_name=data["middle-name"],
-            last_name=data["last-name"],
-            email = data["email"],
-            type = data["type"]
-        )
+        try:
+            admin = Admin(
+                first_name=data["first-name"],
+                middle_name=data["middle-name"],
+                last_name=data["last-name"],
+                email = data["email"],
+                type = data["type"]
+            )
+
+        except:
+            admin = Admin(
+                first_name=data["first-name"],
+                last_name=data["last-name"],
+                email = data["email"],
+                type = data["type"]
+            )
 
         db.session.add(admin)
         db.session.commit()
@@ -183,6 +193,7 @@ def admin_transcripts():
             "indexNumber": transcript.index_number,
             "copies": transcript.copies,
             "status": transcript.status,
+            "contact": transcript.user.contact
 
         }
         transcripts.append(transcript_)

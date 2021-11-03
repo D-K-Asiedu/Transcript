@@ -15,7 +15,7 @@ const CardTitle = ({ status }) => {
                 Transcript detail
             </div>
             <div className="status">
-                Status: <Tag icon={<SyncOutlined spin />} color="processing">{status}</Tag>
+                Status: {<Tag icon={<SyncOutlined spin />} color="processing">{status}</Tag>}
             </div>
         </div>
      );
