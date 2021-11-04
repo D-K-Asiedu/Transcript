@@ -13,6 +13,8 @@ import PrivateRoute from './routes/PrivateRoute';
 import PublicRoute from './routes/PublicRoute';
 import AdminPrivateRoute from './routes/AdminPrivateRoutes';
 
+import useLocalStorage from './CustomHooks/useLocalStorage';
+
 import { AuthContext } from './AuthContext';
 import { useState } from 'react';
 
@@ -27,10 +29,15 @@ import {
 const { Header } = Layout;
 
 function App() {
-  const [login, setLogin] = useState(false)
-  const [token, setToken] = useState(null)
-  const [admin, setAdmin] = useState(null)
-  const [adminLogin, setAdminLogin] = useState(false)
+  // const [login, setLogin] = useState(false)
+  // const [token, setToken] = useState(null)
+  // const [adminLogin, setAdminLogin] = useState(false)
+  // const [admin, setAdmin] = useState(null)
+  
+  const [login, setLogin] = useLocalStorage("login", false)
+  const [token, setToken] = useLocalStorage("token",null)
+  const [admin, setAdmin] = useLocalStorage("admin",null)
+  const [adminLogin, setAdminLogin] = useLocalStorage("adminLogin",false)
   const url = 'http://127.0.0.1:5000'
 
   return (

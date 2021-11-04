@@ -1,14 +1,24 @@
 import { Layout, Menu, Divider } from 'antd';
 import { HomeOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
 import Requests from './Requests';
 import PrintTransactions from './PrintTransactions';
+import { useContext } from 'react';
+import { AuthContext } from '../../AuthContext';
 
 const { Content, Sider } = Layout;
 
 const AdminDashboard = (props) => {
     const { type } = useParams();
     const finance = type === "finance" ? true: false;
+    const {setAdmin, setAdminLogin} = useContext(AuthContext)
+    const history = useHistory()
+
+    const logout = ()=> {
+        setAdmin(null)
+        setAdminLogin(false)
+        history.push('/admin')
+    }
 
     return (
             <Layout>
@@ -33,10 +43,8 @@ const AdminDashboard = (props) => {
                         </Menu.SubMenu>
                         
                         
-                        <Menu.Item key="2" icon={<LogoutOutlined />}>
-                        <Link to="/">
+                        <Menu.Item key="2" icon={<LogoutOutlined />} onClick={logout}>
                             Logout
-                            </Link>
                         </Menu.Item>
 
                     </Menu>

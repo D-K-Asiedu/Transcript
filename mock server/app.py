@@ -22,7 +22,7 @@ class User(db.Model):
 class Transcript(db.Model):
     id  = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(80), nullable=False)
-    middle_name = db.Column(db.String(80))
+    middle_name = db.Column(db.String(80), default="")
     last_name = db.Column(db.String(80), nullable=False)
     index_number = db.Column(db.Integer, nullable=False)
     address = db.Column(db.String(80), nullable=False)
@@ -33,7 +33,7 @@ class Transcript(db.Model):
 class Admin(db.Model):
     id  = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(80), nullable=False)
-    middle_name = db.Column(db.String(80))
+    middle_name = db.Column(db.String(80), default="")
     last_name = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(80), nullable=False, unique=True)
     type = db.Column(db.String(20), nullable=False)
@@ -78,9 +78,20 @@ def request_transcript():
     user = User.query.filter_by(token=data['token']).first()
 
     if user:
-        transcript = Transcript(
-            first_name=data['first-name'], 
-            middle_name=data['middle-name'], 
+        try:
+            transcript = Transcript(
+                first_name=data['first-name'], 
+                middle_name=data['middle-name'], 
+                last_name=data['last-name'],
+                index_number=data['index-number'], 
+                address = data['address'],
+                copies = data['copies'],
+                user_id = user.id
+                )
+
+        except:
+            transcript = Transcript(
+            first_name=data['first-name'],  
             last_name=data['last-name'],
             index_number=data['index-number'], 
             address = data['address'],

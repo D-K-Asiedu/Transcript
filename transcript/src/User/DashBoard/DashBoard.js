@@ -2,7 +2,7 @@ import { Layout, Menu, Divider, message } from 'antd';
 import { HomeOutlined, LogoutOutlined, ContactsOutlined } from '@ant-design/icons';
 import RequestTranscript from './RequestTranscript/RequestTranscript';
 import TranscriptInfo from './TranscriptInfo';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
@@ -15,7 +15,8 @@ const Dashboard = () => {
     }
 
     const [details, setDetails] = useState()
-    const {url, token} = useContext(AuthContext)
+    const {url, token, setToken, setLogin} = useContext(AuthContext)
+    const history = useHistory()
 
     useEffect(()=>{
         console.log(token)
@@ -23,12 +24,17 @@ const Dashboard = () => {
         .then(res => {
             console.log(res.data)
             setDetails(res.data)
-            
         })
         .catch(err => {
             message.error(err.message)
         })
     },[])
+
+    const logout = ()=>{
+        setLogin(false)
+        setToken(null)
+        history.push('/')
+    }
 
     return (
             <Layout>
@@ -52,10 +58,8 @@ const Dashboard = () => {
                         </Menu.SubMenu>
                         
                         
-                        <Menu.Item key="2" icon={<LogoutOutlined />}>
-                        <Link to="/">
+                        <Menu.Item key="2" icon={<LogoutOutlined />} onClick={logout}>
                             Logout
-                            </Link>
                         </Menu.Item>
 
                     </Menu>
