@@ -1,6 +1,6 @@
 import { Form, Input, InputNumber, Card, Button, Layout, Select, message } from 'antd';
 import axios from 'axios';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 
@@ -35,8 +35,10 @@ const AdminRegister = () => {
 
     const history = useHistory()
     const {url} = useContext(AuthContext)
+    const [loading, setLoading] = useState(false)
 
     const handleFinish = (values)=> {
+        setLoading(true)
         axios.post(url+"/admin/register", values)
         .then(res => {
             if (res.data.register == true){
@@ -44,10 +46,12 @@ const AdminRegister = () => {
                 console.log(res.data)
             }else{
                 message.error(res.data.msg)
+                setLoading(false)
             }
             
         })
         .catch(err => {
+            setLoading(false)
             message.error(err.message)
         })
     }
@@ -77,7 +81,7 @@ const AdminRegister = () => {
                                 </Select>                            
                             </Form.Item>
                             <p>Payment has to be made to complete request.</p>
-                            <Button type="primary" htmlType="submit" style={styles.button}>Register</Button>
+                            <Button type="primary" htmlType="submit" style={styles.button} loading={loading}>Register</Button>
                         </Form>
                     </Card>
                 </div>

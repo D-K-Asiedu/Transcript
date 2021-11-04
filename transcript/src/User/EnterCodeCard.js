@@ -2,7 +2,7 @@ import { Card } from 'antd';
 import { Input, Button, Layout, Form, message } from 'antd';
 import { Link, useHistory } from 'react-router-dom';
 import authentication from '../assets/authentication.png'
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 import axios from 'axios';
 import { AuthContext } from '../AuthContext';
@@ -62,6 +62,7 @@ const EnterCodeCard = () => {
     const history = useHistory()
     const {setLogin, setToken, url } = useContext(AuthContext)
     const {contact} = useParams()
+    const [loading, setLoading] = useState(false)
 
     const handleClick = () =>{
         form.submit()
@@ -69,6 +70,7 @@ const EnterCodeCard = () => {
     }
 
     const handleFinish = ()=> {
+        setLoading(true)
         const otp = form.getFieldValue()
 
         const data = {
@@ -84,11 +86,13 @@ const EnterCodeCard = () => {
                 history.push('/request-transcript')
                 message.success("authentication successful")
             }else{
+                setLoading(false)
                 message.error("incorrect otp")
             }
         })
 
         .catch (err => {
+            setLoading(false)
             message.error(err.message)
         })
     }
@@ -108,7 +112,7 @@ const EnterCodeCard = () => {
                                     <Input type="number" placeholder="Enter Mobile Number" size="medium" style={styles.input}/>
                                 </Form.Item>
                             </Form>
-                            <Button type="primary" className="button" style={styles.button} onClick={handleClick}>Next</Button>                        </div>
+                            <Button type="primary" className="button" style={styles.button} onClick={handleClick} loading={loading}>Next</Button>                        </div>
                     </Card>,
                 </div>
             </Content>

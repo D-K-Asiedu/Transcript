@@ -4,7 +4,7 @@ import { MailOutlined } from '@ant-design/icons';
 import password from '../assets/password_icon.png'
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../AuthContext';
 
 
@@ -42,8 +42,10 @@ const AdminLogin = () => {
     }
     const {setAdminLogin, setAdmin, url} = useContext(AuthContext)
     const history = useHistory()
+    const [loading, setLoading] = useState(false)
 
     const onFinish = (values) => {
+        setLoading(true)
         axios.post(url+"/admin/login", values)
         .then(res => {
             if (res.data.login == true){
@@ -52,10 +54,12 @@ const AdminLogin = () => {
                 history.push("/admin/dashboard/"+res.data.type)
             }
             else{
+                setLoading(false)
                 message.error(res.data.msg)
             }
         })
         .catch(err => {
+            setLoading(false)
             message.error(err.message)
         })
     };
@@ -81,7 +85,7 @@ const AdminLogin = () => {
                             </Form.Item>
 
                             <Form.Item>
-                                <Button type="primary" htmlType="submit" style={styles.button}>
+                                <Button type="primary" htmlType="submit" style={styles.button} loading={loading}>
                                     Login
                                 </Button>
                             </Form.Item>

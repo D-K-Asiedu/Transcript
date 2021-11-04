@@ -1,8 +1,9 @@
 import { Form, Input, InputNumber, Card, Button, Layout, message } from 'antd';
 import axios from 'axios';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
+
 
 const { Content } = Layout;
 
@@ -36,13 +37,14 @@ const RequestFormCard = () => {
     const [form] = Form.useForm();
     const history = useHistory()
     const {token} = useContext(AuthContext)
+    const [loading, setLoading] = useState(false)
 
     const handleSubmit = () => {
         form.submit()
     }
 
     const handleFinish = () => {
-        console.log("finished")
+        setLoading(true)
         const _data = form.getFieldValue()
 
         const data = {
@@ -57,6 +59,7 @@ const RequestFormCard = () => {
         })
         .catch(err => {
             message.error(err.message)
+            setLoading(false)
         })
 
     }
@@ -90,7 +93,7 @@ const RequestFormCard = () => {
                                 <InputNumber />
                             </Form.Item>
                             <p>Payment has to be made to complete request.</p>
-                            <Button type="primary" style={styles.button} onClick={handleSubmit}>Pay</Button>
+                            <Button type="primary" style={styles.button} onClick={handleSubmit} loading={loading}>Pay</Button>
                         </Form>
                     </Card>
                 </div>

@@ -24,6 +24,7 @@ const RequestForm = ({ visible, onCancel, setVisible, setDetails }) => {
     const [form] = Form.useForm();
     const history = useHistory();
     const {url, token} = useContext(AuthContext)
+    const [loading, setLoading] = useState(false)
 
     useResetFormOnCloseModal({
         form,
@@ -31,8 +32,13 @@ const RequestForm = ({ visible, onCancel, setVisible, setDetails }) => {
     });
 
     const onOk = () => {
-        form.submit();
-        console.log(form.getFieldValue);
+        form.submit();        
+        
+    };
+
+    const finish = ()=>{
+        setLoading(true)
+
         const _data = form.getFieldValue()
 
         const data = {
@@ -47,6 +53,7 @@ const RequestForm = ({ visible, onCancel, setVisible, setDetails }) => {
 
         })
         .catch(err => {
+            setLoading(false)
             message.error(err.message)
         })
 
@@ -61,8 +68,7 @@ const RequestForm = ({ visible, onCancel, setVisible, setDetails }) => {
             message.error(err.message)
         })
         }, 3000)
-        
-    };
+    }
 
     return (
         <div>
@@ -71,11 +77,11 @@ const RequestForm = ({ visible, onCancel, setVisible, setDetails }) => {
                 <Button key="back" onClick={onCancel}>
                   Cancel
                 </Button>,
-                <Button key="submit" type="primary" onClick={onOk}>
+                <Button key="submit" type="primary" onClick={onOk} loading={loading}>
                   Submit
                 </Button>,]}
             >
-                <Form form={form} layout="vertical" name="request-form">
+                <Form form={form} layout="vertical" name="request-form" onFinish={finish}>
                     <Form.Item label="Index Number" name="index-number" rules={[{ required: true, message: 'Please input your index number!', },]}>
                         <Input type="number" placeholder="Index Number" size="medium" />
                     </Form.Item>

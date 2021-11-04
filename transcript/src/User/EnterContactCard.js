@@ -1,11 +1,13 @@
-import { Card } from 'antd';
+import { Card, Spin } from 'antd';
 import { Input, Button, Layout, Form, message } from 'antd';
 import { Link, useHistory } from 'react-router-dom';
 import number from '../assets/number.png'
+import { LoadingOutlined } from '@ant-design/icons';
+
 import axios from 'axios'
 
 import PostData from '../CustomHooks/PostData';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../AuthContext';
 
 const { Content } = Layout;
@@ -61,6 +63,7 @@ const EnterContactCard = () => {
     const [form] = Form.useForm()
     const history = useHistory()
     const {url ,setLogin,setToken} = useContext(AuthContext)
+    const [loading, setLoading] = useState(false)
 
     const handleClick = () =>{
         form.submit()
@@ -68,6 +71,7 @@ const EnterContactCard = () => {
     }
 
     const handleFinish = ()=> {
+        setLoading(true)
         const contact = form.getFieldValue()
         console.log(contact)
         axios.post(url+"/", contact)
@@ -85,6 +89,7 @@ const EnterContactCard = () => {
         })
 
         .catch (err => {
+            setLoading(false)
             message.error(err.message)
         })
         
@@ -108,7 +113,7 @@ const EnterContactCard = () => {
                                     <Input type="number" placeholder="Enter Mobile Number" size="medium" style={styles.input}/>
                                 </Form.Item>
                             </Form>
-                            <Button type="primary" className="button" style={styles.button} onClick={handleClick}>Next</Button>
+                            <Button type="primary" className="button" style={styles.button} onClick={handleClick} loading={loading}>Next</Button>
                         </div>
                     </Card>,
                 </div>

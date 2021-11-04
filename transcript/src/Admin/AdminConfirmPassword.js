@@ -5,7 +5,7 @@ import password from '../assets/password_icon.png'
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { AuthContext } from '../AuthContext';
 
 const { Content } = Layout;
@@ -49,14 +49,17 @@ const AdminConfirmPassword = () => {
     const history = useHistory()
     const {id} = useParams()
     const {url} = useContext(AuthContext)
+    const [loading, setLoading] = useState(false)
 
 
     const onFinish = (values) => {
+        setLoading(true)
         axios.post(url+"/admin/set-password", {"id": id,...values})
         .then(res => {
             history.push("/admin")
         })
         .catch(err => {
+            setLoading(false)
             message.error(err.message)
         })
     };
@@ -79,7 +82,7 @@ const AdminConfirmPassword = () => {
                                 <Input.Password placeholder={"Confirm password"} prefix={<img src={password} style={{ width: "16px", height: "16px" }}/>}/>
                             </Form.Item>
                             <Form.Item>
-                                <Button type="primary" htmlType="submit" style={styles.button}>
+                                <Button type="primary" htmlType="submit" style={styles.button} loading={loading}>
                                     Next
                                 </Button>
                             </Form.Item>
