@@ -1,4 +1,4 @@
-import { Layout, Menu, Divider, message } from 'antd';
+import { Layout, Menu, Divider, message, notification } from 'antd';
 import { HomeOutlined, LogoutOutlined, ContactsOutlined } from '@ant-design/icons';
 import RequestTranscript from './RequestTranscript/RequestTranscript';
 import TranscriptInfo from './TranscriptInfo';
@@ -18,7 +18,7 @@ const Dashboard = () => {
     const {url, token, setToken, setLogin} = useContext(AuthContext)
     const history = useHistory()
 
-    useEffect(()=>{
+    const fetchTranscripts = ()=> {
         console.log(token)
         axios.post(url+"/transcripts", {"token": token})
         .then(res => {
@@ -28,6 +28,53 @@ const Dashboard = () => {
         .catch(err => {
             message.error(err.message)
         })
+    }
+
+    const recordChange = (transcriptsID)=> {
+        axios.post(url+"/record-change", transcriptsID)
+        .then(res => {
+            console.log(res.data)
+        })
+        .catch(err => {
+            message.error(err.message)
+        })
+    }
+
+    const checkUpdate = () => {
+        axios.post(url+"/status-change", {"token": token})
+        .then(res => {
+            const data = res.data
+            const transcriptsID = []
+            data.map((d) => {
+                transcriptsID.push(d.id)
+            })
+            console.log(transcriptsID)
+            notification.info({
+                key: 1,
+                message: "Transcript Change...",
+                description:  "Transcript status has changed",
+                duration: 30,
+                placement:"bottomRight"
+            })
+            recordChange(transcriptsID)
+            checkUpdate()
+            fetchTranscripts()
+        })
+        .catch(err => {
+            message.error(err.message)
+        })
+    }
+
+
+    useEffect(()=>{
+        fetchTranscripts()
+        setTimeout(
+            ()=> {
+            console.log("starting......")
+            checkUpdate()
+
+            }
+        ,5000)
     },[])
 
     const logout = ()=>{

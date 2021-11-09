@@ -5,6 +5,7 @@ from sqlalchemy.orm import backref
 from random import randint
 from secrets import token_hex
 from flask_cors import CORS
+import time
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///transcript.db'
@@ -28,6 +29,7 @@ class Transcript(db.Model):
     address = db.Column(db.String(80), nullable=False)
     copies = db.Column(db.Integer, nullable=False, default=1)
     status = db.Column(db.Integer, nullable=False, default="pending")
+    status_change = db.Column(db.Integer, nullable=False, default="pending")
     user_id = db.Column(db.Integer,db.ForeignKey('user.id'), nullable=False)
 
 class Admin(db.Model):
@@ -221,9 +223,49 @@ def set_status():
 
     return jsonify({"msg":"Success"})
 
+@app.route("/status-change", methods=["POST"])
+def status_change():
+    data = request.json
 
+    user = User.query.filter_by(token=data["token"]).first()
+    user_id = user.id
 
+    while True:
+        time.sleep(0.5)
+        transcripts = Transcript.query.filter_by(user_id=user_id).filter(Transcript.status != Transcript.status_change).all()
+        
+        if transcripts:
+            data =[]
 
+            for transcript in transcripts:
+                t = {
+                    "id": transcript.id,
+                    "name": f"{transcript.first_name} {transcript.middle_name} {transcript.last_name}",
+                    "indexNumber": transcript.index_number,
+                    "copies": transcript.copies,
+                    "status": transcript.status,
+                    "contact": transcript.user.contact
+                }
+
+                data.append(t)
+
+            return jsonify(data)
+
+        
+        
+
+@app.route("/record-change", methods=["POST"])
+def record_change():
+    data = request.json
+
+    for d in data:
+        transcript = Transcript.query.get(int(d))
+        transcript.status_change = transcript.status
+
+        db.session.commit()
+
+    return jsonify({"msg": "done"})
+    
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, threaded=True)
