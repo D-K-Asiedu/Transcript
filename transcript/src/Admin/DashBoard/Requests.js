@@ -48,7 +48,7 @@ const Requests = (props) => {
 
             return(
             <>
-            <Select defaultValue={record.status} onSelect={(value)=>handleSelect(record.name, record.key, value)}>
+            <Select defaultValue={record.status} onSelect={(value)=>handleSelect(record.name, record.key, record.user,value)}>
                 <Select.Option value="pending" >Pending</Select.Option>
                 <Select.Option value="processing" >Processing</Select.Option>
                 <Select.Option value="printed">Printed</Select.Option>
@@ -87,10 +87,10 @@ const Requests = (props) => {
           },
       ]
 
-      const {url} = useContext(AuthContext)
+      const {url, admin} = useContext(AuthContext)
 
-      const handleSelect = (name, key, value)=>{
-        axios.post(url+"/admin/set-status", {"id": key, "status": value})
+      const handleSelect = (name, key,user, value)=>{
+        axios.post(url+"/admin/set-status", {"id": key, "user": user,"status": value, "token": admin})
         .then(res => {
           message.success("status set successfully")
         })
@@ -117,7 +117,7 @@ const Requests = (props) => {
 
       useEffect(
         ()=> {
-          axios.get(url+"/admin/transcripts")
+          axios.post(url+"/admin/transcripts", {"token": admin})
           .then(res => {
             setResults(res.data)
             console.log(results)

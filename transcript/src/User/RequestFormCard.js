@@ -36,7 +36,7 @@ const RequestFormCard = () => {
 
     const [form] = Form.useForm();
     const history = useHistory()
-    const {token} = useContext(AuthContext)
+    const {token, url} = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
 
     const handleSubmit = () => {
@@ -52,10 +52,11 @@ const RequestFormCard = () => {
             ..._data
         }
 
-        axios.post("http://127.0.0.1:5000/request-transcript", data)
+        axios.post(url+"/request-transcript", data)
         .then(res => {
             console.log(res.status)
             history.push('/dashboard')
+            window.open(url+'/transcript/pay', '_blank').focus();
         })
         .catch(err => {
             message.error(err.message)
@@ -81,15 +82,15 @@ const RequestFormCard = () => {
                                 <Input type="text" placeholder="First Name" size="medium" />
                             </Form.Item>
                             <Form.Item label="Middle Name" name="middle-name" >
-                                <Input type="text" placeholder="Middle Name" size="medium" />
+                                <Input type="text" placeholder="Middle Name" size="medium" value="Hello"/>
                             </Form.Item>
                             <Form.Item label="last Name" name="last-name" rules={[{ required: true, message: 'Please input your last name!', },]}>
                                 <Input type="text" placeholder="Last Name" size="medium" />
                             </Form.Item>
-                            <Form.Item label="Address" name="address" rules={[{ required: true, message: 'Please input your last address!', },]}>
-                                <Input type="text" placeholder="Last Name" size="medium" />
+                            <Form.Item label="Address" name="address" rules={[{ required: true, message: 'Please input your address!', },]}>
+                                <Input type="text" placeholder="Address" size="medium" />
                             </Form.Item>
-                            <Form.Item name="Number of Copies" label="Number of Copies" name="copies">
+                            <Form.Item label="Number of Copies" name="copies" rules={[{ required: true, message: 'Please input number of copies!', }]}>
                                 <InputNumber />
                             </Form.Item>
                             <p>Payment has to be made to complete request.</p>
