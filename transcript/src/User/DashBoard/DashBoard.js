@@ -31,7 +31,7 @@ const Dashboard = () => {
     }
 
     const recordChange = (transcriptsID)=> {
-        axios.post(url+"/record-change", transcriptsID)
+        axios.post(url+"/record-change", {"ids": transcriptsID, "token": token})
         .then(res => {
             console.log(res.data)
         })

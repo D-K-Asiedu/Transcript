@@ -15,3 +15,10 @@ def generate_token(user):
         }, app.config["SECRET_KEY"])
 
     return token
+
+def format_contact(contact):
+    if contact[0] == 0:
+        return "+233"+contact[1:]
+
+    elif contact[0] == "+":
+        return contact

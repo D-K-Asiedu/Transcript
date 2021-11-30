@@ -4,6 +4,7 @@ from bson.objectid import ObjectId
 from flask import jsonify, request
 from app import app
 from app import bcrypt
+import time
 
 from app.Otp import Otp
 from app.model import model
@@ -26,7 +27,7 @@ def contact():
         })
 
     else:
-        otp.gen_otp()
+        otp.get_otp(data["contact"])
         return jsonify({
             "otp": otp.otp,
             "login": False
@@ -35,7 +36,7 @@ def contact():
 @app.route("/otp", methods=["POST"])
 def get_otp():
     data = request.json
-    if int(data['otp']) == otp.otp:
+    if otp.verify_otp(int(data["otp"])) == True:
         User.insert_one({"contact": data["contact"]})
         token = generate_token(data["contact"])
         
@@ -44,6 +45,9 @@ def get_otp():
             "login": True,
             "token": token
             })
+
+    else:
+        return jsonify({"otp": False})
 
 
 @app.route('/request-transcript', methods=['POST'])
@@ -205,6 +209,41 @@ def status_change():
     data = request.json
 
     contact = decode_token(data["token"])
+    
+    while True:
+        time.sleep(0.5)
+
+        user = User.find_one({"contact": contact})
+        changed = []
+        changed.clear()
+        for index,transcript in enumerate(user["transcripts"]):
+            if transcript["status"] != transcript["status-change"]:
+                transcript_ = {
+                "id": index+1,
+                "name": f"{transcript['first-name']} {transcript['middle-name']} {transcript['last-name']}",
+                "index_number": transcript["index-number"],
+                "copies": transcript["copies"],
+                "status": transcript["status"],
+                "contact": user["contact"]
+            }
+                changed.append(transcript_)
+
+        if len(changed) > 0:
+            return jsonify(changed)
+
+
+@app.route("/record-change", methods=["POST"])
+@login_required
+def record_change():
+    data = request.json
+    contact = decode_token(data["token"])
     user = User.find_one({"contact": contact})
+
+    for d in data["ids"]:
+        User.update_one({"contact": contact}, {"$set": {"transcripts."+ str(d-1) + ".status-change": user["transcripts"][d-1]["status"]}})
+
+    return jsonify({"msg": "done"})
+
+    
 
 
