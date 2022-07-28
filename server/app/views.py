@@ -12,7 +12,7 @@ from app.helper import decode_token, generate_token
 from app.decorators import login_required
 
 otp = Otp()
-User, Admin = model('mongodb://localhost:27017/')
+User, Admin = model("mongodb+srv://af:codename01@cluster0.lwkwv4u.mongodb.net/?retryWrites=true&w=majority")
 
 @app.route("/", methods=["POST"])
 def contact():

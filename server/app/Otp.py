@@ -15,12 +15,12 @@ class Otp():
         self.otp = randint(10000, 99999)
         self.time = datetime.now()
 
-        account_sid = 'AC35088d773e571b16f2d65d20d46878c6' 
-        auth_token = '882d7d3d08f4272926a3ebae096c04e5' 
-        client = Client(account_sid, auth_token)
-        messaging_service_sid='MGb18b6a6fa90587f2c5a101986f9a3fc2'
-        body = f'Your otp code is {str(self.otp)}. Code expires in 30 minutes',
-        message = client.messages.create(  messaging_service_sid=messaging_service_sid, body=body, to="+233"+contact[1:])
+        # account_sid = 'AC35088d773e571b16f2d65d20d46878c6' 
+        # auth_token = 'e724e7145ca927b4116d83ae66dde2ac' 
+        # client = Client(account_sid, auth_token)
+        # messaging_service_sid='MGb18b6a6fa90587f2c5a101986f9a3fc2'
+        # body = f'Your otp code is {str(self.otp)}. Code expires in 30 minutes',
+        # message = client.messages.create(  messaging_service_sid=messaging_service_sid, body=body, to="+233"+contact[1:])
 
 
     def verify_otp(self, code):

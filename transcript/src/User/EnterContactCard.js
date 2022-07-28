@@ -83,6 +83,7 @@ const EnterContactCard = () => {
                     history.push('/dashboard')
                 }else{
                     console.log(res.data)
+                    alert(`Your otp is ${res.data.otp}. Otp is also the console`)
                     history.push('/otp/'+contact.contact)
         
                 }
