@@ -14,6 +14,10 @@ from app.decorators import login_required
 otp = Otp()
 User, Admin = model("mongodb+srv://af:codename01@cluster0.lwkwv4u.mongodb.net/?retryWrites=true&w=majority")
 
+@app.route('/test')
+def test():
+    return "<h1>API is working🔥🔥🔥</h1>"
+
 @app.route("/", methods=["POST"])
 def contact():
     data = request.json
